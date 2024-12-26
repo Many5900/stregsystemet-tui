@@ -1,0 +1,25 @@
+[package]
+name = "stregsystemet-tui"
+version = "1.0.0"
+edition = "2021"
+description = "A TUI for Stregsystemet"
+license = "MIT"
+repository = "https://github.com/Many5900/stregsystemet-tui"
+readme = "README.md"
+keywords = ["tui", "cli", "terminal"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "stui"
+path = "src/main.rs"
+
+[dependencies]
+ratatui = "0.29.0"
+crossterm = "0.29.0"
+toml = "0.9.5"
+serde = { version = "1.0.219", features = ["derive"] }
+dirs = "6.0.0"
+reqwest = { version = "0.12.23", features = ["json"] }
+tokio = { version = "1.47.1", features = ["full"] }
+chrono = { version = "0.4.41", features = ["serde"] }
+serde_json = "1.0.143"
