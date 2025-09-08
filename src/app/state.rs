@@ -104,6 +104,9 @@ pub struct ParkingModalState {
     pub error: Option<String>,
     pub success: bool,
     pub confirming: bool,
+    pub vehicle_brand: Option<String>,
+    pub vehicle_model: Option<String>,
+    pub vehicle_variant: Option<String>,
 }
 
 #[derive(Clone)]
@@ -173,6 +176,9 @@ impl AppState {
                     error: None,
                     success: false,
                     confirming: false,
+                    vehicle_brand: None,
+                    vehicle_model: None,
+                    vehicle_variant: None,
                 },
                 terminal_size: TerminalSizeModalState { visible: false },
             },

@@ -79,7 +79,7 @@ pub fn render_username(f: &mut Frame, area: Rect, username: Option<&String>) {
             );
         f.render_widget(username_text, area);
     } else {
-        let unknown_text = Paragraph::new("not logged in")
+        let unknown_text = Paragraph::new("unknown")
             .style(Style::default().fg(Color::Red))
             .block(
                 Block::default()

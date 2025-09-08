@@ -11,6 +11,7 @@ mod app;
 mod config;
 mod error;
 mod models;
+mod parking;
 mod ui;
 mod utils;
 
