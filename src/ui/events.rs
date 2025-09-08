@@ -489,6 +489,17 @@ impl<'a> EventHandler<'a> {
                         &format!("Error confirming parking: {e}"),
                         Some("Parking Error"),
                     );
+                } else {
+                    let license_plate = self.state.modals.parking.license_plate_input.clone();
+                    let _ = self.action_handler.fetch_vehicle_info(&license_plate).await;
+
+                    let action_state = self.action_handler.get_state();
+                    self.state.modals.parking.vehicle_brand =
+                        action_state.modals.parking.vehicle_brand.clone();
+                    self.state.modals.parking.vehicle_model =
+                        action_state.modals.parking.vehicle_model.clone();
+                    self.state.modals.parking.vehicle_variant =
+                        action_state.modals.parking.vehicle_variant.clone();
                 }
             }
             KeyCode::Tab => {

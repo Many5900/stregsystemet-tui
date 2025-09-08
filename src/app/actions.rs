@@ -2,6 +2,7 @@ use crate::api::client::ApiClient;
 use crate::app::modals::error::ErrorModalActions;
 use crate::app::state::AppState;
 use crate::error::Result;
+use crate::parking::vehicle_info;
 use crate::utils::formatters::format_error_message;
 use crate::utils::money::Money;
 
@@ -287,6 +288,20 @@ impl ActionHandler {
             ));
         }
         None
+    }
+
+    pub async fn fetch_vehicle_info(&mut self, license_plate: &str) -> Result<()> {
+        self.state.modals.parking.vehicle_brand = None;
+        self.state.modals.parking.vehicle_model = None;
+        self.state.modals.parking.vehicle_variant = None;
+
+        if let Ok(vehicle_info) = vehicle_info::fetch_vehicle_info(license_plate).await {
+            self.state.modals.parking.vehicle_brand = vehicle_info.brand;
+            self.state.modals.parking.vehicle_model = vehicle_info.model;
+            self.state.modals.parking.vehicle_variant = vehicle_info.variant;
+        }
+
+        Ok(())
     }
 
     pub async fn process_parking_registration(
