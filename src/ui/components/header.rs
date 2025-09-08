@@ -25,7 +25,7 @@ pub fn render_title(f: &mut Frame, area: Rect) {
         .title(format!(
             " {} ",
             Span::styled(
-                "Stregsystemet-TUI v1.0",
+                "Stregsystemet-TUI v1.1",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD)
