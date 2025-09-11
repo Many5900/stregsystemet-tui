@@ -25,7 +25,7 @@ pub fn render_title(f: &mut Frame, area: Rect) {
         .title(format!(
             " {} ",
             Span::styled(
-                "Stregsystemet-TUI v1.0",
+                "Stregsystemet-TUI v1.1",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD)
@@ -79,7 +79,7 @@ pub fn render_username(f: &mut Frame, area: Rect, username: Option<&String>) {
             );
         f.render_widget(username_text, area);
     } else {
-        let unknown_text = Paragraph::new("not logged in")
+        let unknown_text = Paragraph::new("unknown")
             .style(Style::default().fg(Color::Red))
             .block(
                 Block::default()

@@ -36,6 +36,8 @@ pub enum InputMode {
     ParkingModal,
     ParkingConfirmation,
     TerminalSizeModal,
+    QrPaymentAmount,
+    QrPaymentDisplay,
 }
 
 #[derive(Clone)]
@@ -63,6 +65,7 @@ pub struct ModalState {
     pub error: ErrorModalState,
     pub parking: ParkingModalState,
     pub terminal_size: TerminalSizeModalState,
+    pub qr_payment: QrPaymentModalState,
 }
 
 #[derive(Clone)]
@@ -104,11 +107,22 @@ pub struct ParkingModalState {
     pub error: Option<String>,
     pub success: bool,
     pub confirming: bool,
+    pub vehicle_brand: Option<String>,
+    pub vehicle_model: Option<String>,
+    pub vehicle_variant: Option<String>,
 }
 
 #[derive(Clone)]
 pub struct TerminalSizeModalState {
     pub visible: bool,
+}
+
+#[derive(Clone)]
+pub struct QrPaymentModalState {
+    pub visible: bool,
+    pub amount_input: String,
+    pub qr_data: Option<crate::qr::payment_qr::PaymentQrData>,
+    pub showing_qr: bool,
 }
 
 impl AppState {
@@ -173,8 +187,17 @@ impl AppState {
                     error: None,
                     success: false,
                     confirming: false,
+                    vehicle_brand: None,
+                    vehicle_model: None,
+                    vehicle_variant: None,
                 },
                 terminal_size: TerminalSizeModalState { visible: false },
+                qr_payment: QrPaymentModalState {
+                    visible: false,
+                    amount_input: String::new(),
+                    qr_data: None,
+                    showing_qr: false,
+                },
             },
 
             should_quit: false,
