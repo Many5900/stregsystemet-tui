@@ -12,6 +12,7 @@ mod config;
 mod error;
 mod models;
 mod parking;
+mod qr;
 mod ui;
 mod utils;
 
