@@ -1,13 +1,11 @@
 use std::error::Error;
 
-#[derive(Debug, Clone)]
-#[derive(Default)]
+#[derive(Debug, Clone, Default)]
 pub struct VehicleInfo {
     pub brand: Option<String>,
     pub model: Option<String>,
     pub variant: Option<String>,
 }
-
 
 fn extract_content_by_id(html: &str, id: &str) -> Option<String> {
     let id_pattern = format!("id=\"{id}\"");
@@ -31,9 +29,7 @@ fn extract_content_by_id(html: &str, id: &str) -> Option<String> {
 }
 
 pub async fn fetch_vehicle_info(license_plate: &str) -> Result<VehicleInfo, Box<dyn Error>> {
-    let url = format!(
-        "https://www.nummerplade.net/nummerplade/{license_plate}.html"
-    );
+    let url = format!("https://www.nummerplade.net/nummerplade/{license_plate}.html");
 
     let client = reqwest::Client::new();
     let response = client.get(&url).send().await?;
@@ -52,4 +48,3 @@ pub async fn fetch_vehicle_info(license_plate: &str) -> Result<VehicleInfo, Box<
 
     Ok(vehicle_info)
 }
-
