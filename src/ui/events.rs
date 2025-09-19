@@ -11,9 +11,9 @@ use tokio::sync::mpsc;
 use crate::api::client::ApiClient;
 use crate::app::actions::ActionHandler;
 use crate::app::modals::{
-    error::ErrorModalActions, parking::ParkingModalActions, purchase::PurchaseModalActions,
-    search::SearchModalActions, terminal_size::TerminalSizeModalActions,
-    username::UsernameModalActions,
+    error::ErrorModalActions, help::HelpModalActions, parking::ParkingModalActions,
+    purchase::PurchaseModalActions, qr_payment::QrPaymentModalActions, search::SearchModalActions,
+    terminal_size::TerminalSizeModalActions, username::UsernameModalActions,
 };
 use crate::app::state::{AppState, InputMode};
 use crate::config::store::save_config;
@@ -133,6 +133,11 @@ impl<'a> EventHandler<'a> {
     }
 
     async fn handle_key_event(&mut self, key: KeyEvent) -> Result<()> {
+        if key.code == KeyCode::Char('?') && self.state.ui.input_mode != InputMode::HelpModal {
+            self.state.show_help_modal();
+            return Ok(());
+        }
+
         match self.state.ui.input_mode {
             InputMode::Normal => self.handle_normal_mode(key).await?,
             InputMode::Editing => self.handle_editing_mode(key).await?,
@@ -147,6 +152,10 @@ impl<'a> EventHandler<'a> {
                     self.state.should_quit = true;
                 }
             }
+
+            InputMode::QrPaymentAmount => self.handle_qr_payment_amount(key).await?,
+            InputMode::QrPaymentDisplay => self.handle_qr_payment_display(key).await?,
+            InputMode::HelpModal => self.handle_help_modal(key).await?,
         }
 
         Ok(())
@@ -202,6 +211,15 @@ impl<'a> EventHandler<'a> {
             KeyCode::Char('p') => {
                 self.state.show_parking_modal();
             }
+
+            KeyCode::Char('m') => {
+                self.state.show_qr_payment_modal();
+            }
+
+            KeyCode::Char('h') | KeyCode::Char('?') => {
+                self.state.show_help_modal();
+            }
+
             KeyCode::Enter => {
                 if self.state.config.username.is_some() && !self.state.products.items.is_empty() {
                     self.state.show_purchase_modal()?;
@@ -489,6 +507,17 @@ impl<'a> EventHandler<'a> {
                         &format!("Error confirming parking: {e}"),
                         Some("Parking Error"),
                     );
+                } else {
+                    let license_plate = self.state.modals.parking.license_plate_input.clone();
+                    let _ = self.action_handler.fetch_vehicle_info(&license_plate).await;
+
+                    let action_state = self.action_handler.get_state();
+                    self.state.modals.parking.vehicle_brand =
+                        action_state.modals.parking.vehicle_brand.clone();
+                    self.state.modals.parking.vehicle_model =
+                        action_state.modals.parking.vehicle_model.clone();
+                    self.state.modals.parking.vehicle_variant =
+                        action_state.modals.parking.vehicle_variant.clone();
                 }
             }
             KeyCode::Tab => {
@@ -556,6 +585,65 @@ impl<'a> EventHandler<'a> {
             }
             KeyCode::Char('n') | KeyCode::Esc => {
                 self.state.hide_parking_modal();
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+
+    async fn handle_qr_payment_amount(&mut self, key: KeyEvent) -> Result<()> {
+        match key.code {
+            KeyCode::Enter => {
+                if let Err(e) = self.state.generate_qr_code() {
+                    self.state.show_error_modal(
+                        &format!("Error generating QR code: {e}"),
+                        Some("QR Generation Error"),
+                    );
+                }
+            }
+            KeyCode::Char(c) if c.is_ascii_digit() || c == '.' => {
+                self.state.modals.qr_payment.amount_input.push(c);
+            }
+            KeyCode::Backspace => {
+                self.state.modals.qr_payment.amount_input.pop();
+            }
+            KeyCode::Esc => {
+                self.state.hide_qr_payment_modal();
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+
+    async fn handle_qr_payment_display(&mut self, key: KeyEvent) -> Result<()> {
+        match key.code {
+            KeyCode::Char('b') | KeyCode::Backspace => {
+                self.state.back_to_amount_input();
+            }
+            KeyCode::Esc => {
+                self.state.hide_qr_payment_modal();
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+
+    async fn handle_help_modal(&mut self, key: KeyEvent) -> Result<()> {
+        match key.code {
+            KeyCode::Esc | KeyCode::Char('q') | KeyCode::Char('?') | KeyCode::Char('h') => {
+                self.state.hide_help_modal();
+            }
+            KeyCode::Right | KeyCode::Tab => {
+                self.state.next_help_tab();
+            }
+            KeyCode::Left | KeyCode::BackTab => {
+                self.state.previous_help_tab();
+            }
+            KeyCode::Char('n') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                self.state.next_help_tab();
+            }
+            KeyCode::Char('p') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                self.state.previous_help_tab();
             }
             _ => {}
         }

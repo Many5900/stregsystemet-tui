@@ -187,7 +187,7 @@ fn render_parking_confirm_modal(f: &mut Frame, area: Rect, parking_state: &Parki
     let config = ModalConfig {
         title: "Confirm Parking".to_string(),
         min_width: 50,
-        min_height: 9,
+        min_height: 12,
         border_color: Color::Yellow,
         bg_color: Color::Black,
     };
@@ -198,6 +198,9 @@ fn render_parking_confirm_modal(f: &mut Frame, area: Rect, parking_state: &Parki
             .vertical_margin(1)
             .constraints(
                 [
+                    Constraint::Length(1),
+                    Constraint::Length(1),
+                    Constraint::Length(1),
                     Constraint::Length(1),
                     Constraint::Length(1),
                     Constraint::Length(1),
@@ -222,15 +225,48 @@ fn render_parking_confirm_modal(f: &mut Frame, area: Rect, parking_state: &Parki
         .alignment(Alignment::Left);
         f.render_widget(plate_text, content_chunks[1]);
 
+        let brand_text = Paragraph::new(format!(
+            " Brand: {}",
+            parking_state
+                .vehicle_brand
+                .as_deref()
+                .unwrap_or("Loading...")
+        ))
+        .style(Style::default().fg(Color::White))
+        .alignment(Alignment::Left);
+        f.render_widget(brand_text, content_chunks[2]);
+
+        let model_text = Paragraph::new(format!(
+            " Model: {}",
+            parking_state
+                .vehicle_model
+                .as_deref()
+                .unwrap_or("Loading...")
+        ))
+        .style(Style::default().fg(Color::White))
+        .alignment(Alignment::Left);
+        f.render_widget(model_text, content_chunks[3]);
+
+        let variant_text = Paragraph::new(format!(
+            " Variant: {}",
+            parking_state
+                .vehicle_variant
+                .as_deref()
+                .unwrap_or("Loading...")
+        ))
+        .style(Style::default().fg(Color::White))
+        .alignment(Alignment::Left);
+        f.render_widget(variant_text, content_chunks[4]);
+
         let confirm_text = Paragraph::new("Register parking for 10 hours?")
             .style(Style::default().fg(Color::Yellow))
             .alignment(Alignment::Center);
-        f.render_widget(confirm_text, content_chunks[3]);
+        f.render_widget(confirm_text, content_chunks[6]);
 
         let help_text = Paragraph::new("'y': Confirm | 'n': Cancel")
             .style(Style::default().fg(Color::Gray))
             .alignment(Alignment::Center);
-        f.render_widget(help_text, content_chunks[4]);
+        f.render_widget(help_text, content_chunks[7]);
     });
 }
 

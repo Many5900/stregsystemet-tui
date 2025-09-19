@@ -4,8 +4,8 @@ pub mod layout_constants {
     pub const HEADER_HEIGHT: u16 = 3;
     pub const INSTRUCTIONS_HEIGHT: u16 = 3;
     pub const MIN_CONTENT_HEIGHT: u16 = 10;
-    pub const MIN_PRODUCT_WIDTH: u16 = 50;
-    pub const USER_PANEL_WIDTH: u16 = 54;
+    pub const MIN_PRODUCT_WIDTH: u16 = 30;
+    pub const USER_PANEL_WIDTH: u16 = 45;
     pub const USERNAME_AREA_WIDTH: u16 = 24;
     pub const MIN_TITLE_WIDTH: u16 = 20;
     pub const WELCOME_MESSAGE_HEIGHT: u16 = 4;

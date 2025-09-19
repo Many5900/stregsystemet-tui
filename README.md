@@ -4,7 +4,7 @@ A modern, feature-rich Terminal User Interface (TUI) for the Stregsystemet bever
 
 [![Rust](https://img.shields.io/badge/language-Rust-orange.svg)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/Many5900/stregsystemet-tui)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/Many5900/stregsystemet-tui)
 
 ## Overview
 
