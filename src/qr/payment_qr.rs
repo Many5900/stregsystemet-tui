@@ -12,9 +12,8 @@ pub struct PaymentQrData {
 
 impl PaymentQrData {
     pub fn new(username: String, amount: f64) -> Result<Self, Box<dyn Error>> {
-        let mobilepay_url = format!(
-            "mobilepay://send?phone={F_KLUB_NUMBER}&comment={username}&amount={amount:.2}"
-        );
+        let mobilepay_url =
+            format!("mobilepay://send?phone={F_KLUB_NUMBER}&comment={username}&amount={amount:.2}");
 
         let qr_code = QrCode::new(&mobilepay_url).ok();
 

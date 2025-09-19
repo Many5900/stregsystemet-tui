@@ -630,7 +630,7 @@ impl<'a> EventHandler<'a> {
 
     async fn handle_help_modal(&mut self, key: KeyEvent) -> Result<()> {
         match key.code {
-            KeyCode::Esc => {
+            KeyCode::Esc | KeyCode::Char('q') | KeyCode::Char('?') | KeyCode::Char('h') => {
                 self.state.hide_help_modal();
             }
             KeyCode::Right | KeyCode::Tab => {

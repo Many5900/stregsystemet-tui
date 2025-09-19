@@ -190,7 +190,7 @@ fn render_login_input(f: &mut Frame, area: Rect, input: &str, input_mode: &Input
 
 fn render_navigation_help(f: &mut Frame, area: Rect) {
     let instructions = ratatui::widgets::Paragraph::new(
-        "'j' or '↓': Down | 'k' or '↑': Up | 'gg': Top | 'G': Bottom | 'enter': Buy | '/' or 's': Search | 'h' or '?': Help | 'q': Quit",
+        "'j' or '↓': Down | 'k' or '↑': Up | 'enter': Buy | '/' or 's': Search | 'h' or '?': Help | 'q': Quit",
     )
     .style(ratatui::style::Style::default())
     .block(

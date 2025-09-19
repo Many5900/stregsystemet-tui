@@ -16,9 +16,9 @@ pub fn render_help_modal(
 ) {
     let config = ModalConfig {
         title: format!(
-            "Help - {} ({}/7)",
-            help_state.current_tab.title(),
-            get_tab_index(help_state.current_tab) + 1
+            "Help - ({}/7) {}",
+            get_tab_index(help_state.current_tab) + 1,
+            help_state.current_tab.title()
         ),
         min_width: 80,
         min_height: 25,
@@ -68,7 +68,7 @@ fn render_tab_navigation_info(f: &mut Frame, area: Rect) {
 }
 
 fn render_modal_navigation_info(f: &mut Frame, area: Rect) {
-    let text = Paragraph::new("Press 'Esc' to close help")
+    let text = Paragraph::new("Press 'esc' or 'q' to close help")
         .style(Style::default().fg(Color::Gray))
         .alignment(ratatui::layout::Alignment::Center);
     f.render_widget(text, area);
@@ -94,7 +94,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
 
     let navigation_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Move down in product list: "),
+            Span::raw("Move down in product list: "),
             Span::styled(
                 "j",
                 Style::default()
@@ -110,7 +110,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Move up in product list: "),
+            Span::raw("Move up in product list: "),
             Span::styled(
                 "k",
                 Style::default()
@@ -126,7 +126,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Go to top of product list: "),
+            Span::raw("Go to top of product list: "),
             Span::styled(
                 "gg",
                 Style::default()
@@ -135,7 +135,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Go to bottom of product list: "),
+            Span::raw("Go to bottom of product list: "),
             Span::styled(
                 "G",
                 Style::default()
@@ -144,9 +144,16 @@ fn render_home_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Jump relative number of items up/down: "),
+            Span::raw("Jump relative number of items up/down: "),
             Span::styled(
-                "[number]",
+                "[0-9]+",
+                Style::default()
+                    .fg(Color::Green)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::raw(" followed by "),
+            Span::styled(
+                "[jk↓↑]{1}",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
@@ -156,7 +163,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
 
     let actions_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Buy selected product: "),
+            Span::raw("Buy selected product: "),
             Span::styled(
                 "Enter",
                 Style::default()
@@ -165,7 +172,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Open search modal: "),
+            Span::raw("Open search modal: "),
             Span::styled(
                 "/",
                 Style::default()
@@ -181,7 +188,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Change username: "),
+            Span::raw("Change username: "),
             Span::styled(
                 "u",
                 Style::default()
@@ -190,7 +197,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Open parking modal: "),
+            Span::raw("Open parking modal: "),
             Span::styled(
                 "p",
                 Style::default()
@@ -199,7 +206,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Insert money (QR payment): "),
+            Span::raw("Insert money (QR payment): "),
             Span::styled(
                 "m",
                 Style::default()
@@ -208,7 +215,7 @@ fn render_home_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Show this help modal: "),
+            Span::raw("Show this help modal: "),
             Span::styled(
                 "h",
                 Style::default()
@@ -222,9 +229,23 @@ fn render_home_help(f: &mut Frame, area: Rect) {
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
+            Span::raw("     "),
+            Span::styled(
+                "NOTE: ",
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "?",
+                Style::default()
+                    .fg(Color::Green)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::raw(" is available everywhere"),
         ]),
         Line::from(vec![
-            Span::raw("  Quit application: "),
+            Span::raw("Quit application: "),
             Span::styled(
                 "q",
                 Style::default()
@@ -269,7 +290,7 @@ fn render_buy_help(f: &mut Frame, area: Rect) {
 
     let purchase_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Confirm purchase: "),
+            Span::raw("Confirm purchase: "),
             Span::styled(
                 "y",
                 Style::default()
@@ -278,7 +299,7 @@ fn render_buy_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Cancel purchase: "),
+            Span::raw("Cancel purchase: "),
             Span::styled(
                 "n",
                 Style::default()
@@ -297,16 +318,9 @@ fn render_buy_help(f: &mut Frame, area: Rect) {
 
     let quantity_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Increase quantity: "),
+            Span::raw("Increase quantity: "),
             Span::styled(
                 "+",
-                Style::default()
-                    .fg(Color::Green)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::raw(" or "),
-            Span::styled(
-                "=",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
@@ -318,9 +332,16 @@ fn render_buy_help(f: &mut Frame, area: Rect) {
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
+            Span::raw(" or "),
+            Span::styled(
+                "=",
+                Style::default()
+                    .fg(Color::Green)
+                    .add_modifier(Modifier::BOLD),
+            ),
         ]),
         Line::from(vec![
-            Span::raw("  Decrease quantity: "),
+            Span::raw("Decrease quantity: "),
             Span::styled(
                 "-",
                 Style::default()
@@ -329,14 +350,14 @@ fn render_buy_help(f: &mut Frame, area: Rect) {
             ),
             Span::raw(" or "),
             Span::styled(
-                "_",
+                "←",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
             Span::raw(" or "),
             Span::styled(
-                "←",
+                "_",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
@@ -374,23 +395,23 @@ fn render_buy_help(f: &mut Frame, area: Rect) {
 fn render_search_help(f: &mut Frame, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(4), Constraint::Length(6)])
+        .constraints([Constraint::Length(4), Constraint::Length(5)])
         .split(area);
 
     let input_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Search for products by name: "),
+            Span::raw("Search for products: "),
             Span::styled(
-                "Type",
+                "[0-9a-zA-Z]+",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Delete character from search: "),
+            Span::raw("Close search modal: "),
             Span::styled(
-                "Backspace",
+                "Esc",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
@@ -400,7 +421,7 @@ fn render_search_help(f: &mut Frame, area: Rect) {
 
     let navigation_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Next search result: "),
+            Span::raw("Next search result: "),
             Span::styled(
                 "↓",
                 Style::default()
@@ -409,14 +430,14 @@ fn render_search_help(f: &mut Frame, area: Rect) {
             ),
             Span::raw(" or "),
             Span::styled(
-                "Ctrl+N",
+                "Ctrl + n",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Previous search result: "),
+            Span::raw("Previous search result: "),
             Span::styled(
                 "↑",
                 Style::default()
@@ -425,25 +446,16 @@ fn render_search_help(f: &mut Frame, area: Rect) {
             ),
             Span::raw(" or "),
             Span::styled(
-                "Ctrl+P",
+                "Ctrl + p",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Select highlighted search result: "),
+            Span::raw("Select highlighted search result: "),
             Span::styled(
                 "Enter",
-                Style::default()
-                    .fg(Color::Green)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::raw("  Close search modal: "),
-            Span::styled(
-                "Esc",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
@@ -481,30 +493,21 @@ fn render_search_help(f: &mut Frame, area: Rect) {
 fn render_insert_money_help(f: &mut Frame, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(7), Constraint::Length(4)])
+        .constraints([Constraint::Length(5), Constraint::Length(4)])
         .split(area);
 
     let amount_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Enter amount to add to account: "),
+            Span::raw("Enter amount to be added to your account: "),
             Span::styled(
-                "Numbers",
+                "[0-9]+(\\.[0-9]{1,2})?",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Decimal point for precise amounts: "),
-            Span::styled(
-                ".",
-                Style::default()
-                    .fg(Color::Green)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::raw("  Generate QR code for payment: "),
+            Span::raw("Generate QR code for payment: "),
             Span::styled(
                 "Enter",
                 Style::default()
@@ -513,16 +516,7 @@ fn render_insert_money_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Delete last character: "),
-            Span::styled(
-                "Backspace",
-                Style::default()
-                    .fg(Color::Green)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::raw("  Close insert money modal: "),
+            Span::raw("Close insert money modal: "),
             Span::styled(
                 "Esc",
                 Style::default()
@@ -534,7 +528,7 @@ fn render_insert_money_help(f: &mut Frame, area: Rect) {
 
     let qr_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Back to amount input: "),
+            Span::raw("Back to amount input: "),
             Span::styled(
                 "b",
                 Style::default()
@@ -550,7 +544,7 @@ fn render_insert_money_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Close insert money modal: "),
+            Span::raw("Close QR display: "),
             Span::styled(
                 "Esc",
                 Style::default()
@@ -590,30 +584,30 @@ fn render_insert_money_help(f: &mut Frame, area: Rect) {
 fn render_parking_help(f: &mut Frame, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(9), Constraint::Length(4)])
+        .constraints([Constraint::Length(8), Constraint::Length(4)])
         .split(area);
 
     let input_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Enter phone number (8 digits): "),
+            Span::raw("Enter phone number: "),
             Span::styled(
-                "Numbers",
+                "[0-9]{8}",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Enter license plate: "),
+            Span::raw("Enter license plate: "),
             Span::styled(
-                "Letters/Numbers",
+                "[A-Z]{2}[0-9]{5}",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Next field: "),
+            Span::raw("Next field: "),
             Span::styled(
                 "Tab",
                 Style::default()
@@ -622,16 +616,16 @@ fn render_parking_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Previous field: "),
+            Span::raw("Previous field: "),
             Span::styled(
-                "Shift+Tab",
+                "Shift + Tab",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Confirm parking registration: "),
+            Span::raw("Confirm parking input: "),
             Span::styled(
                 "Enter",
                 Style::default()
@@ -640,16 +634,7 @@ fn render_parking_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Delete character from current field: "),
-            Span::styled(
-                "Backspace",
-                Style::default()
-                    .fg(Color::Green)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::raw("  Close parking modal: "),
+            Span::raw("Close parking modal: "),
             Span::styled(
                 "Esc",
                 Style::default()
@@ -661,7 +646,7 @@ fn render_parking_help(f: &mut Frame, area: Rect) {
 
     let confirm_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Confirm parking registration: "),
+            Span::raw("Confirm parking registration: "),
             Span::styled(
                 "y",
                 Style::default()
@@ -670,7 +655,7 @@ fn render_parking_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Cancel parking registration: "),
+            Span::raw("Cancel parking registration: "),
             Span::styled(
                 "n",
                 Style::default()
@@ -717,33 +702,22 @@ fn render_parking_help(f: &mut Frame, area: Rect) {
 fn render_change_username_help(f: &mut Frame, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(4), Constraint::Length(4)])
+        .constraints([Constraint::Length(3), Constraint::Length(4)])
         .split(area);
 
-    let input_text = Text::from(vec![
-        Line::from(vec![
-            Span::raw("  Enter new username: "),
-            Span::styled(
-                "Type",
-                Style::default()
-                    .fg(Color::Green)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::raw("  Delete character from username: "),
-            Span::styled(
-                "Backspace",
-                Style::default()
-                    .fg(Color::Green)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-    ]);
+    let input_text = Text::from(vec![Line::from(vec![
+        Span::raw("Enter username: "),
+        Span::styled(
+            "[^?]+",
+            Style::default()
+                .fg(Color::Green)
+                .add_modifier(Modifier::BOLD),
+        ),
+    ])]);
 
     let actions_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Confirm username change: "),
+            Span::raw("Confirm username change: "),
             Span::styled(
                 "Enter",
                 Style::default()
@@ -752,7 +726,7 @@ fn render_change_username_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Cancel username change: "),
+            Span::raw("Cancel username change: "),
             Span::styled(
                 "Esc",
                 Style::default()
@@ -801,7 +775,7 @@ fn render_help_modal_help(f: &mut Frame, area: Rect) {
 
     let opening_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Open help from any screen: "),
+            Span::raw("Show this help modal: "),
             Span::styled(
                 "h",
                 Style::default()
@@ -815,11 +789,32 @@ fn render_help_modal_help(f: &mut Frame, area: Rect) {
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
+            Span::raw("     "),
+            Span::styled(
+                "NOTE: ",
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "?",
+                Style::default()
+                    .fg(Color::Green)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::raw(" is available everywhere"),
         ]),
         Line::from(vec![
-            Span::raw("  Close this help modal: "),
+            Span::raw("Close this help modal: "),
             Span::styled(
                 "Esc",
+                Style::default()
+                    .fg(Color::Green)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::raw(" or "),
+            Span::styled(
+                "q",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
@@ -829,7 +824,7 @@ fn render_help_modal_help(f: &mut Frame, area: Rect) {
 
     let navigation_text = Text::from(vec![
         Line::from(vec![
-            Span::raw("  Next tab: "),
+            Span::raw("Next tab: "),
             Span::styled(
                 "→",
                 Style::default()
@@ -838,7 +833,7 @@ fn render_help_modal_help(f: &mut Frame, area: Rect) {
             ),
             Span::raw(" or "),
             Span::styled(
-                "Ctrl+N",
+                "Ctrl + n",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
@@ -852,7 +847,7 @@ fn render_help_modal_help(f: &mut Frame, area: Rect) {
             ),
         ]),
         Line::from(vec![
-            Span::raw("  Previous tab: "),
+            Span::raw("Previous tab: "),
             Span::styled(
                 "←",
                 Style::default()
@@ -861,14 +856,14 @@ fn render_help_modal_help(f: &mut Frame, area: Rect) {
             ),
             Span::raw(" or "),
             Span::styled(
-                "Ctrl+P",
+                "Ctrl + p",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
             ),
             Span::raw(" or "),
             Span::styled(
-                "Shift+Tab",
+                "Shift + Tab",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
@@ -877,13 +872,13 @@ fn render_help_modal_help(f: &mut Frame, area: Rect) {
     ]);
 
     let tabs_text = Text::from(vec![
-        Line::from("  1. Home - Main navigation and product list controls"),
-        Line::from("  2. Buy - Purchase confirmation and quantity controls"),
-        Line::from("  3. Search - Product search functionality"),
-        Line::from("  4. Insert Money - QR payment system"),
-        Line::from("  5. Parking - Vehicle registration system"),
-        Line::from("  6. Change Username - User account management"),
-        Line::from("  7. Help Modal - This help system"),
+        Line::from("1. Home - Main navigation and product list controls"),
+        Line::from("2. Buy - Purchase confirmation and quantity controls"),
+        Line::from("3. Search - Product search controls"),
+        Line::from("4. Insert Money - QR payment system"),
+        Line::from("5. Parking - Vehicle registration system"),
+        Line::from("6. Change Username - User account management"),
+        Line::from("7. Help Modal - This help system"),
     ]);
 
     let opening_paragraph = Paragraph::new(opening_text)
