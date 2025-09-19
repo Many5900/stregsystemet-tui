@@ -1,4 +1,5 @@
 pub mod error;
+pub mod help;
 pub mod parking;
 pub mod purchase;
 pub mod qr_payment;

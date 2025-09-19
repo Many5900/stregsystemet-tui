@@ -38,6 +38,7 @@ pub enum InputMode {
     TerminalSizeModal,
     QrPaymentAmount,
     QrPaymentDisplay,
+    HelpModal,
 }
 
 #[derive(Clone)]
@@ -66,6 +67,7 @@ pub struct ModalState {
     pub parking: ParkingModalState,
     pub terminal_size: TerminalSizeModalState,
     pub qr_payment: QrPaymentModalState,
+    pub help: HelpModalState,
 }
 
 #[derive(Clone)]
@@ -123,6 +125,61 @@ pub struct QrPaymentModalState {
     pub amount_input: String,
     pub qr_data: Option<crate::qr::payment_qr::PaymentQrData>,
     pub showing_qr: bool,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum HelpTab {
+    Home,
+    Buy,
+    Search,
+    InsertMoney,
+    Parking,
+    ChangeUsername,
+    HelpModal,
+}
+
+impl HelpTab {
+    pub fn next(self) -> Self {
+        match self {
+            HelpTab::Home => HelpTab::Buy,
+            HelpTab::Buy => HelpTab::Search,
+            HelpTab::Search => HelpTab::InsertMoney,
+            HelpTab::InsertMoney => HelpTab::Parking,
+            HelpTab::Parking => HelpTab::ChangeUsername,
+            HelpTab::ChangeUsername => HelpTab::HelpModal,
+            HelpTab::HelpModal => HelpTab::Home,
+        }
+    }
+
+    pub fn previous(self) -> Self {
+        match self {
+            HelpTab::Home => HelpTab::HelpModal,
+            HelpTab::Buy => HelpTab::Home,
+            HelpTab::Search => HelpTab::Buy,
+            HelpTab::InsertMoney => HelpTab::Search,
+            HelpTab::Parking => HelpTab::InsertMoney,
+            HelpTab::ChangeUsername => HelpTab::Parking,
+            HelpTab::HelpModal => HelpTab::ChangeUsername,
+        }
+    }
+
+    pub fn title(self) -> &'static str {
+        match self {
+            HelpTab::Home => "Home",
+            HelpTab::Buy => "Buy",
+            HelpTab::Search => "Search",
+            HelpTab::InsertMoney => "Insert Money",
+            HelpTab::Parking => "Parking",
+            HelpTab::ChangeUsername => "Change Username",
+            HelpTab::HelpModal => "Help Modal",
+        }
+    }
+}
+
+#[derive(Clone)]
+pub struct HelpModalState {
+    pub visible: bool,
+    pub current_tab: HelpTab,
 }
 
 impl AppState {
@@ -197,6 +254,10 @@ impl AppState {
                     amount_input: String::new(),
                     qr_data: None,
                     showing_qr: false,
+                },
+                help: HelpModalState {
+                    visible: false,
+                    current_tab: HelpTab::Home,
                 },
             },
 

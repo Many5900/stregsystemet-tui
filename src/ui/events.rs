@@ -11,8 +11,8 @@ use tokio::sync::mpsc;
 use crate::api::client::ApiClient;
 use crate::app::actions::ActionHandler;
 use crate::app::modals::{
-    error::ErrorModalActions, parking::ParkingModalActions, purchase::PurchaseModalActions,
-    qr_payment::QrPaymentModalActions, search::SearchModalActions,
+    error::ErrorModalActions, help::HelpModalActions, parking::ParkingModalActions,
+    purchase::PurchaseModalActions, qr_payment::QrPaymentModalActions, search::SearchModalActions,
     terminal_size::TerminalSizeModalActions, username::UsernameModalActions,
 };
 use crate::app::state::{AppState, InputMode};
@@ -133,6 +133,11 @@ impl<'a> EventHandler<'a> {
     }
 
     async fn handle_key_event(&mut self, key: KeyEvent) -> Result<()> {
+        if key.code == KeyCode::Char('?') && self.state.ui.input_mode != InputMode::HelpModal {
+            self.state.show_help_modal();
+            return Ok(());
+        }
+
         match self.state.ui.input_mode {
             InputMode::Normal => self.handle_normal_mode(key).await?,
             InputMode::Editing => self.handle_editing_mode(key).await?,
@@ -150,6 +155,7 @@ impl<'a> EventHandler<'a> {
 
             InputMode::QrPaymentAmount => self.handle_qr_payment_amount(key).await?,
             InputMode::QrPaymentDisplay => self.handle_qr_payment_display(key).await?,
+            InputMode::HelpModal => self.handle_help_modal(key).await?,
         }
 
         Ok(())
@@ -208,6 +214,10 @@ impl<'a> EventHandler<'a> {
 
             KeyCode::Char('m') => {
                 self.state.show_qr_payment_modal();
+            }
+
+            KeyCode::Char('h') | KeyCode::Char('?') => {
+                self.state.show_help_modal();
             }
 
             KeyCode::Enter => {
@@ -612,6 +622,28 @@ impl<'a> EventHandler<'a> {
             }
             KeyCode::Esc => {
                 self.state.hide_qr_payment_modal();
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+
+    async fn handle_help_modal(&mut self, key: KeyEvent) -> Result<()> {
+        match key.code {
+            KeyCode::Esc => {
+                self.state.hide_help_modal();
+            }
+            KeyCode::Right | KeyCode::Tab => {
+                self.state.next_help_tab();
+            }
+            KeyCode::Left | KeyCode::BackTab => {
+                self.state.previous_help_tab();
+            }
+            KeyCode::Char('n') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                self.state.next_help_tab();
+            }
+            KeyCode::Char('p') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                self.state.previous_help_tab();
             }
             _ => {}
         }
