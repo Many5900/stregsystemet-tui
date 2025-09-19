@@ -4,7 +4,7 @@ use crate::app::state::{AppState, InputMode};
 
 use crate::ui::components::header;
 use crate::ui::components::modals::{
-    error, parking, purchase, qr_payment, search, terminal_size, username,
+    error, help, parking, purchase, qr_payment, search, terminal_size, username,
 };
 use crate::ui::components::products_list::render_products;
 use crate::ui::components::user_panel::render_user_panel;
@@ -115,6 +115,10 @@ pub fn ui(f: &mut Frame, app: &AppState) {
             &app.ui.input_mode,
         );
     }
+
+    if app.modals.help.visible {
+        help::render_help_modal(f, f.area(), &app.modals.help, &app.ui.input_mode);
+    }
 }
 
 fn render_logged_in_content(f: &mut Frame, area: Rect, app: &AppState) {
@@ -186,7 +190,7 @@ fn render_login_input(f: &mut Frame, area: Rect, input: &str, input_mode: &Input
 
 fn render_navigation_help(f: &mut Frame, area: Rect) {
     let instructions = ratatui::widgets::Paragraph::new(
-        "'j' or '↓': Down | 'k' or '↑': Up | 'gg': Top | 'G': Bottom | 'enter': Buy | '/' or 's': Search | 'u': Change Username | 'p': Parking | 'm': Insert Money | 'q': Quit",
+        "'j' or '↓': Down | 'k' or '↑': Up | 'enter': Buy | '/' or 's': Search | 'h' or '?': Help | 'q': Quit",
     )
     .style(ratatui::style::Style::default())
     .block(
