@@ -34,6 +34,10 @@ impl Config {
         "https://stregsystem.fklub.dk/api".to_string()
     }
 
+    pub fn get_analytics_url() -> String {
+        "http://68.183.79.209:4000/analytics".to_string()
+    }
+
     pub fn get_config_path() -> Result<PathBuf> {
         let home_dir = dirs::home_dir()
             .ok_or_else(|| AppError::Config("Could not find home directory".to_string()))?;

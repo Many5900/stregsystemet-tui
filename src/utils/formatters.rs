@@ -93,3 +93,11 @@ pub fn sanitize_html(input: &str) -> String {
 
     final_result.trim().to_string()
 }
+
+pub fn convert_name_to_initials(full_name: &str) -> String {
+    full_name
+        .split_whitespace()
+        .map(|word| word.chars().next().unwrap_or(' '))
+        .collect::<String>()
+        .to_lowercase()
+}

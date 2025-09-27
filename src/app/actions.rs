@@ -4,6 +4,7 @@ use crate::app::state::AppState;
 use crate::error::Result;
 use crate::parking::vehicle_info;
 use crate::utils::formatters::format_error_message;
+use crate::utils::formatters::convert_name_to_initials;
 use crate::utils::money::Money;
 
 pub struct ActionHandler {
@@ -130,6 +131,26 @@ impl ActionHandler {
             match self.api_client.make_purchase(member_id, &buystring).await {
                 Ok(_) => {
                     self.state.modals.purchase.success = true;
+
+                    // Track completely anonymous analytics - only user initials (not full name or username) are stored (e.g., "Marc Nygaard" becomes "mn")
+                    // Analytics are solely for the author (Marc Nygaard) to see if people are using the application, nothing else!
+                    if let (Some(member_info), Some(product_id)) = (
+                        &self.state.user.member_info,
+                        &self.state.modals.purchase.selected_product_id,
+                    ) {
+                        if let Some(product) = self.state.products.items.get(product_id) {
+                            let user_initials = convert_name_to_initials(&member_info.name);
+                            let _ = self
+                                .api_client
+                                .track_purchase_analytics(
+                                    &user_initials,
+                                    product_id,
+                                    &product.name,
+                                    self.state.modals.purchase.quantity as i32,
+                                )
+                                .await;
+                        }
+                    }
 
                     let _ = self.load_user_data().await;
                 }

@@ -186,4 +186,30 @@ impl ApiClient {
 
         Ok(())
     }
+
+    pub async fn track_purchase_analytics(
+        &self,
+        user_initials: &str,
+        product_id: &str,
+        product_name: &str,
+        quantity: i32,
+    ) -> Result<()> {
+        let analytics_url = Config::get_analytics_url();
+        
+        let payload = json!({
+            "user_initials": user_initials,
+            "product_id": product_id,
+            "product_name": product_name,
+            "quantity": quantity
+        });
+
+        let _ = self
+            .client
+            .post(&analytics_url)
+            .json(&payload)
+            .send()
+            .await;
+
+        Ok(())
+    }
 }
