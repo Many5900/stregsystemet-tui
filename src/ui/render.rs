@@ -33,7 +33,12 @@ pub fn ui(f: &mut Frame, app: &mut AppState) {
     let top_chunks = layout::create_top_layout(main_chunks[0]);
 
     header::render_title(f, top_chunks[0]);
-    header::render_username(f, top_chunks[1], app.config.username.as_ref());
+    header::render_username(
+        f,
+        top_chunks[1],
+        app.config.username.as_ref(),
+        app.config.hide_username,
+    );
 
     if app.config.username.is_some() {
         render_logged_in_content(f, main_chunks[1], app);
@@ -56,6 +61,7 @@ pub fn ui(f: &mut Frame, app: &mut AppState) {
             f,
             f.area(),
             &app.modals.username.input,
+            app.modals.username.hide_username,
             &app.ui.input_mode,
         );
     }
@@ -127,7 +133,7 @@ fn render_logged_in_content(f: &mut Frame, area: Rect, app: &mut AppState) {
     let products_items = app.products.items.clone();
     let products_error = app.products.error.clone();
     let products_list_state = app.products.list_state.clone();
-    
+
     render_products(
         f,
         middle_chunks[0],

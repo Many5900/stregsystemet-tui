@@ -702,7 +702,7 @@ fn render_parking_help(f: &mut Frame, area: Rect) {
 fn render_change_username_help(f: &mut Frame, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(3), Constraint::Length(4)])
+        .constraints([Constraint::Length(3), Constraint::Length(5)])
         .split(area);
 
     let input_text = Text::from(vec![Line::from(vec![
@@ -729,6 +729,15 @@ fn render_change_username_help(f: &mut Frame, area: Rect) {
             Span::raw("Cancel username change: "),
             Span::styled(
                 "Esc",
+                Style::default()
+                    .fg(Color::Green)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::raw("Toggle username visibility: "),
+            Span::styled(
+                "Tab",
                 Style::default()
                     .fg(Color::Green)
                     .add_modifier(Modifier::BOLD),
