@@ -113,7 +113,7 @@ impl<'a> EventHandler<'a> {
 
         loop {
             self.terminal
-                .draw(|f| crate::ui::render::ui(f, &self.state))?;
+                .draw(|f| crate::ui::render::ui(f, &mut self.state))?;
 
             let size = self.terminal.size()?;
             self.state.check_terminal_size(size.width, size.height);

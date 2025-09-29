@@ -1,7 +1,7 @@
 use crate::app::state::{AppState, InputMode};
 
 pub const MIN_TERMINAL_WIDTH: u16 = 85;
-pub const MIN_TERMINAL_HEIGHT: u16 = 40;
+pub const MIN_TERMINAL_HEIGHT: u16 = 25;
 
 pub trait TerminalSizeModalActions {
     fn show_terminal_size_modal(&mut self);
