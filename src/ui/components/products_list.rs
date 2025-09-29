@@ -21,7 +21,7 @@ pub fn render_products(
     products: &HashMap<String, Product>,
     error: &Option<String>,
     list_state: &ListState,
-    app_state: &AppState,
+    app_state: &mut AppState,
 ) {
     let products_block = Block::default()
         .borders(Borders::ALL)
@@ -38,11 +38,15 @@ pub fn render_products(
         let inner_area = products_block.inner(area);
         f.render_widget(products_block, area);
         render_error(f, inner_area, error, Some("Error loading products"));
+        app_state.products.visible_range = None;
+        return;
     } else if products.is_empty() {
         let empty_text = Paragraph::new("No products available")
             .style(Style::default().fg(Color::Yellow))
             .block(products_block);
         f.render_widget(empty_text, area);
+        app_state.products.visible_range = None;
+        return;
     } else {
         let mut products_vec: Vec<&Product> = products.values().collect();
 
@@ -245,6 +249,7 @@ pub fn render_products(
                     .highlight_style(Style::default().add_modifier(Modifier::REVERSED));
                 
                 f.render_stateful_widget(products_list, area, &mut scroll_state);
+                app_state.products.visible_range = Some((final_scroll_offset, final_scroll_offset + content_height));
                 return;
             }
         }
@@ -255,5 +260,6 @@ pub fn render_products(
         
         let mut mutable_list_state = list_state.clone();
         f.render_stateful_widget(products_list, area, &mut mutable_list_state);
+        app_state.products.visible_range = None;
     }
 }

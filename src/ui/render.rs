@@ -16,7 +16,7 @@ pub struct InstructionsViewState<'a> {
     pub input_mode: &'a InputMode,
 }
 
-pub fn ui(f: &mut Frame, app: &AppState) {
+pub fn ui(f: &mut Frame, app: &mut AppState) {
     if app.modals.terminal_size.visible {
         let size = f.area();
         terminal_size::render_terminal_size_modal(
@@ -121,15 +121,19 @@ pub fn ui(f: &mut Frame, app: &AppState) {
     }
 }
 
-fn render_logged_in_content(f: &mut Frame, area: Rect, app: &AppState) {
+fn render_logged_in_content(f: &mut Frame, area: Rect, app: &mut AppState) {
     let middle_chunks = layout::create_middle_layout(area);
 
+    let products_items = app.products.items.clone();
+    let products_error = app.products.error.clone();
+    let products_list_state = app.products.list_state.clone();
+    
     render_products(
         f,
         middle_chunks[0],
-        &app.products.items,
-        &app.products.error,
-        &app.products.list_state,
+        &products_items,
+        &products_error,
+        &products_list_state,
         app,
     );
 

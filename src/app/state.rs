@@ -48,6 +48,7 @@ pub struct ProductsState {
     pub error: Option<String>,
     pub named_products: HashMap<String, i32>,
     pub named_products_error: Option<String>,
+    pub visible_range: Option<(usize, usize)>,
 }
 
 #[derive(Clone)]
@@ -204,6 +205,7 @@ impl AppState {
                 error: None,
                 named_products: HashMap::new(),
                 named_products_error: None,
+                visible_range: None,
             },
 
             user: UserState {
@@ -307,8 +309,13 @@ impl AppState {
             }
         }
 
+        if let Some((visible_start, visible_end)) = self.products.visible_range {
+            targets.retain(|&target| target >= visible_start && target < visible_end);
+        }
+
         targets
     }
+
 
     pub fn push_input_mode(&mut self, new_mode: InputMode) {
         self.ui.previous_input_mode = Some(self.ui.input_mode);
