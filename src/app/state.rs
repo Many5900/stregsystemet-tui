@@ -48,6 +48,7 @@ pub struct ProductsState {
     pub error: Option<String>,
     pub named_products: HashMap<String, i32>,
     pub named_products_error: Option<String>,
+    pub visible_range: Option<(usize, usize)>,
 }
 
 #[derive(Clone)]
@@ -81,6 +82,7 @@ pub struct ErrorModalState {
 pub struct UsernameModalState {
     pub visible: bool,
     pub input: String,
+    pub hide_username: bool,
 }
 
 #[derive(Clone)]
@@ -204,6 +206,7 @@ impl AppState {
                 error: None,
                 named_products: HashMap::new(),
                 named_products_error: None,
+                visible_range: None,
             },
 
             user: UserState {
@@ -217,6 +220,7 @@ impl AppState {
                 username: UsernameModalState {
                     visible: false,
                     input: String::new(),
+                    hide_username: false,
                 },
                 purchase: PurchaseModalState {
                     visible: false,
@@ -305,6 +309,10 @@ impl AppState {
                     targets.push(target_below);
                 }
             }
+        }
+
+        if let Some((visible_start, visible_end)) = self.products.visible_range {
+            targets.retain(|&target| target >= visible_start && target < visible_end);
         }
 
         targets
