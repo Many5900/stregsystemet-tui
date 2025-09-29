@@ -50,17 +50,21 @@ pub fn render_title(f: &mut Frame, area: Rect) {
     f.render_widget(title_text, area);
 }
 
-pub fn render_username(f: &mut Frame, area: Rect, username: Option<&String>) {
+pub fn render_username(f: &mut Frame, area: Rect, username: Option<&String>, hide_username: bool) {
     if let Some(username) = username {
-        let max_name_len = area.width.saturating_sub(8) as usize;
-        let display_name = if username.len() > max_name_len {
-            if max_name_len > 3 {
-                format!("{}...", &username[0..max_name_len - 3])
-            } else {
-                username[0..max_name_len.min(username.len())].to_string()
-            }
+        let display_name = if hide_username {
+            "***".to_string()
         } else {
-            username.clone()
+            let max_name_len = area.width.saturating_sub(8) as usize;
+            if username.len() > max_name_len {
+                if max_name_len > 3 {
+                    format!("{}...", &username[0..max_name_len - 3])
+                } else {
+                    username[0..max_name_len.min(username.len())].to_string()
+                }
+            } else {
+                username.clone()
+            }
         };
 
         let username_text = Paragraph::new(display_name)

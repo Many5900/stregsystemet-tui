@@ -82,6 +82,7 @@ pub struct ErrorModalState {
 pub struct UsernameModalState {
     pub visible: bool,
     pub input: String,
+    pub hide_username: bool,
 }
 
 #[derive(Clone)]
@@ -219,6 +220,7 @@ impl AppState {
                 username: UsernameModalState {
                     visible: false,
                     input: String::new(),
+                    hide_username: false,
                 },
                 purchase: PurchaseModalState {
                     visible: false,
@@ -315,7 +317,6 @@ impl AppState {
 
         targets
     }
-
 
     pub fn push_input_mode(&mut self, new_mode: InputMode) {
         self.ui.previous_input_mode = Some(self.ui.input_mode);

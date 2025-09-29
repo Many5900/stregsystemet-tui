@@ -10,6 +10,7 @@ pub struct Config {
     #[serde(default = "default_room_id")]
     pub room_id: u32,
 
+    pub hide_username: bool,
     pub phone_number: Option<String>,
     pub license_plate: Option<String>,
 }
@@ -23,6 +24,7 @@ impl Default for Config {
         Self {
             username: None,
             room_id: default_room_id(),
+            hide_username: false,
             phone_number: None,
             license_plate: None,
         }

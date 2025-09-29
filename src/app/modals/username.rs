@@ -8,6 +8,8 @@ pub trait UsernameModalActions {
     fn hide_username_modal(&mut self);
 
     fn update_username(&mut self) -> Result<()>;
+
+    fn toggle_username_visibility(&mut self);
 }
 
 impl UsernameModalActions for AppState {
@@ -16,6 +18,7 @@ impl UsernameModalActions for AppState {
         self.push_input_mode(InputMode::EditingUsername);
 
         self.modals.username.input = self.config.username.clone().unwrap_or_default();
+        self.modals.username.hide_username = self.config.hide_username;
     }
 
     fn hide_username_modal(&mut self) {
@@ -32,9 +35,14 @@ impl UsernameModalActions for AppState {
         }
 
         self.config.username = Some(new_username);
+        self.config.hide_username = self.modals.username.hide_username;
         save_config(&self.config)?;
         self.hide_username_modal();
 
         Ok(())
+    }
+
+    fn toggle_username_visibility(&mut self) {
+        self.modals.username.hide_username = !self.modals.username.hide_username;
     }
 }

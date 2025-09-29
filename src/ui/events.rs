@@ -347,6 +347,9 @@ impl<'a> EventHandler<'a> {
             KeyCode::Esc => {
                 self.state.hide_username_modal();
             }
+            KeyCode::Tab => {
+                self.state.toggle_username_visibility();
+            }
             _ => {}
         }
         Ok(())
